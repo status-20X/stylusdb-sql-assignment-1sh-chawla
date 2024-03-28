@@ -6,8 +6,8 @@ test('Read CSV File', async () => {
     const data = await readCSV('./student.csv');
     expect(data.length).toBeGreaterThan(0);
     expect(data.length).toBe(3);
-    expect(data[0].name).toBe('John');
-    expect(data[0].age).toBe('30'); //ignore the string type here, we will fix this later
+    expect(data[0].name).toBe('Vansh');
+    expect(data[0].age).toBe('21');
 });
 
 test('Parse SQL Query', () => {
@@ -16,7 +16,7 @@ test('Parse SQL Query', () => {
     expect(parsed).toEqual({
         fields: ['id', 'name'],
         table: 'student',
-        whereClauses: [],
+        whereClauses : [],
         joinCondition: null,
         joinTable: null
     });
@@ -29,36 +29,36 @@ test('Execute SQL Query', async () => {
     expect(result[0]).toHaveProperty('id');
     expect(result[0]).toHaveProperty('name');
     expect(result[0]).not.toHaveProperty('age');
-    expect(result[0]).toEqual({ id: '1', name: 'John' });
+    expect(result[0]).toEqual({ id: '1', name: 'Vansh' });
 });
 
 test('Parse SQL Query with WHERE Clause', () => {
-    const query = 'SELECT id, name FROM student WHERE age = 25';
+    const query = 'SELECT id, name FROM student WHERE age = 22';
     const parsed = parseQuery(query);
     expect(parsed).toEqual({
         fields: ['id', 'name'],
         table: 'student',
         whereClauses: [{
-            "field": "age",
-            "operator": "=",
-            "value": "25",
-        }],
-        joinCondition: null,
-        joinTable: null
+            field: "age",
+            operator: "=",
+            value: "22",
+          }],
+          joinCondition: null,
+          joinTable: null
     });
 });
 
 test('Execute SQL Query with WHERE Clause', async () => {
-    const query = 'SELECT id, name FROM student WHERE age = 25';
+    const query = 'SELECT id, name FROM student WHERE age = 22';
     const result = await executeSELECTQuery(query);
     expect(result.length).toBe(1);
     expect(result[0]).toHaveProperty('id');
     expect(result[0]).toHaveProperty('name');
-    expect(result[0].id).toBe('2');
+    expect(result[0].id).toBe('3');
 });
 
 test('Parse SQL Query with Multiple WHERE Clauses', () => {
-    const query = 'SELECT id, name FROM student WHERE age = 30 AND name = John';
+    const query = 'SELECT id, name FROM student WHERE age = 21 AND name = Vansh';
     const parsed = parseQuery(query);
     expect(parsed).toEqual({
         fields: ['id', 'name'],
@@ -66,33 +66,33 @@ test('Parse SQL Query with Multiple WHERE Clauses', () => {
         whereClauses: [{
             "field": "age",
             "operator": "=",
-            "value": "30",
+            "value": "21",
         }, {
             "field": "name",
             "operator": "=",
-            "value": "John",
+            "value": "Vansh",
         }],
         joinCondition: null,
         joinTable: null
     });
 });
 
-test('Execute SQL Query with Complex WHERE Clause', async () => {
-    const query = 'SELECT id, name FROM student WHERE age = 30 AND name = John';
+test('Execute SQL Query with Multiple WHERE Clause', async () => {
+    const query = 'SELECT id, name FROM student WHERE age = 21 AND name = Vansh';
     const result = await executeSELECTQuery(query);
     expect(result.length).toBe(1);
-    expect(result[0]).toEqual({ id: '1', name: 'John' });
+    expect(result[0]).toEqual({ id: '1', name: 'Vansh' });
 });
 
 test('Execute SQL Query with Greater Than', async () => {
-    const queryWithGT = 'SELECT id FROM student WHERE age > 22';
+    const queryWithGT = 'SELECT id FROM student WHERE age > 21';
     const result = await executeSELECTQuery(queryWithGT);
-    expect(result.length).toEqual(2);
+    expect(result.length).toEqual(1);
     expect(result[0]).toHaveProperty('id');
 });
 
 test('Execute SQL Query with Not Equal to', async () => {
-    const queryWithGT = 'SELECT name FROM student WHERE age != 25';
+    const queryWithGT = 'SELECT name FROM student WHERE age != 22';
     const result = await executeSELECTQuery(queryWithGT);
     expect(result.length).toEqual(2);
     expect(result[0]).toHaveProperty('name');
@@ -137,31 +137,18 @@ test('Execute SQL Query with INNER JOIN', async () => {
     // toHaveProperty is not working here due to dot in the property name
     expect(result[0]).toEqual(expect.objectContaining({
         "enrollment.course": "Mathematics",
-        "student.name": "John"
+        "student.name": "Vansh"
     }));
 });
 
 test('Execute SQL Query with INNER JOIN and a WHERE Clause', async () => {
-    const query = 'SELECT student.name, enrollment.course, student.age FROM student INNER JOIN enrollment ON student.id = enrollment.student_id WHERE student.age > 25';
+    const query = 'SELECT student.name, enrollment.course, student.age FROM student INNER JOIN enrollment ON student.id = enrollment.student_id WHERE student.age > 21';
     const result = await executeSELECTQuery(query);
-    /*
-    result =  [
-      {
-        'student.name': 'John',
-        'enrollment.course': 'Mathematics',
-        'student.age': '30'
-      },
-      {
-        'student.name': 'John',
-        'enrollment.course': 'Physics',
-        'student.age': '30'
-      }
-    ]
-    */
-    expect(result.length).toEqual(2);
+    
+    expect(result.length).toEqual(1);
     // toHaveProperty is not working here due to dot in the property name
     expect(result[0]).toEqual(expect.objectContaining({
         "enrollment.course": "Mathematics",
-        "student.name": "John"
+        "student.name": "Notbob"
     }));
 });
