@@ -15,7 +15,7 @@ test('Parse SQL Query', () => {
     const parsed = parseQuery(query);
     expect(parsed).toEqual({
         fields: ['id', 'name'],
-        whereClauses: Array [],
+        whereClauses: [],
         joinCondition: null,
         joinTable: null,
         table: 'sample'
