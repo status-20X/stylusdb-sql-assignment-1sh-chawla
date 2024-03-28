@@ -14,6 +14,8 @@ test('Parse SQL Query', () => {
     const parsed = parseQuery(query);
     expect(parsed).toEqual({
         fields: ['id', 'name'],
+        joinCondition: null,
+        joinTable: null,
         table: 'sample'
     });
 });

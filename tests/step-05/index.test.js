@@ -15,6 +15,8 @@ test('Parse SQL Query', () => {
     const parsed = parseQuery(query);
     expect(parsed).toEqual({
         fields: ['id', 'name'],
+        joinCondition: null,
+        joinTable: null,
         table: 'sample',
         whereClause : null
     });
@@ -35,6 +37,8 @@ test('Parse SQL Query with WHERE Clause', () => {
     const parsed = parseQuery(query);
     expect(parsed).toEqual({
         fields: ['id', 'name'],
+        joinCondition: null,
+        joinTable: null,
         table: 'sample',
         whereClause: 'age = 22'
     });
